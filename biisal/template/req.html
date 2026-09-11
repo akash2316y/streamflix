@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16121a">
+<title>{{ file_name }}</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#16121a;
+    --bg-soft:#1c1620;
+    --surface:#221a27;
+    --surface-2:#2b2130;
+    --accent:#e8a63b;
+    --accent-ink:#231604;
+    --accent-soft:rgba(232,166,59,.14);
+    --wine:#a44357;
+    --text:#f5efe6;
+    --text-muted:#a79aae;
+    --border:rgba(245,239,230,.09);
+    --font-display:'Fraunces',Georgia,serif;
+    --font-ui:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(232,166,59,.10), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-ui);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  .topbar{
+    display:flex;align-items:center;justify-content:center;
+    padding:18px 20px 6px;
+  }
+  .brand{
+    display:inline-flex;align-items:center;gap:9px;
+    text-decoration:none;
+    padding:7px 14px 7px 8px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--surface);
+  }
+  .brand-mark{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+  .brand-mark svg{width:10px;height:10px;fill:var(--accent-ink);}
+  .brand-name{font-size:.82rem;font-weight:700;color:var(--text-muted);letter-spacing:.01em;}
+
+  .wrap{max-width:620px;margin:0 auto;padding:18px 18px 10px;}
+
+  .screen-frame{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:10px;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.2);
+    overflow:hidden;
+  }
+  .screen-glow{
+    position:absolute;inset:-40% -10% auto -10%;height:70%;
+    background:radial-gradient(ellipse at center, rgba(232,166,59,.16), transparent 65%);
+    pointer-events:none;
+  }
+  .player-shell{
+    position:relative;border-radius:14px;overflow:hidden;
+    background:radial-gradient(ellipse at 50% 40%, #2e2436, #150f19 75%);
+    display:flex;align-items:center;justify-content:center;
+    min-height:200px;
+  }
+  .player-shell svg.watermark{
+    position:absolute;width:58px;height:58px;opacity:.16;
+    stroke:var(--text);fill:none;stroke-width:1.3;pointer-events:none;
+  }
+  video.player{position:relative;display:block;width:100%;max-height:70vh;background:transparent;}
+
+  .control-bar{
+    display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+    margin-top:14px;
+  }
+  .control{display:flex;align-items:center;gap:8px;}
+  .control-label{font-size:.72rem;font-weight:700;color:var(--text-muted);}
+  .control-select{
+    appearance:none;-webkit-appearance:none;
+    background:var(--surface-2) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a79aae'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%23a79aae' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 10px center;
+    background-size:14px;
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:var(--font-ui);font-weight:700;font-size:.82rem;
+    padding:8px 30px 8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    max-width:44vw;
+    text-overflow:ellipsis;
+  }
+  .control-select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .ticket-divider{
+    position:relative;height:0;border-top:2px dashed var(--border);
+    margin:26px 6px;
+  }
+  .ticket-divider::before,.ticket-divider::after{
+    content:"";position:absolute;top:50%;transform:translateY(-50%);
+    width:18px;height:18px;border-radius:50%;background:var(--bg);
+  }
+  .ticket-divider::before{left:-24px;}
+  .ticket-divider::after{right:-24px;}
+
+  .info{padding:0 4px;}
+  .file-title{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(1.15rem,4.2vw,1.55rem);
+    line-height:1.3;
+    margin:0;
+    word-break:break-word;
+    color:var(--text);
+  }
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .meta-pill{
+    background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text-muted);
+    padding:5px 13px;border-radius:999px;
+    font-size:.76rem;font-weight:700;letter-spacing:.01em;
+  }
+  .meta-pill.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent;}
+
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:13px 22px;border-radius:999px;border:none;
+    font-weight:700;font-size:.92rem;cursor:pointer;
+    text-decoration:none;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn svg{width:17px;height:17px;flex:0 0 auto;}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 14px 30px -14px rgba(232,166,59,.55);}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border);}
+  .btn-ghost.is-copied{background:var(--accent-soft);color:var(--accent);border-color:transparent;}
+
+  .external{margin-top:30px;}
+  .section-heading{
+    font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 12px;
+  }
+  .tile-row{
+    display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;
+    scrollbar-width:thin;
+  }
+  .tile{
+    flex:0 0 auto;width:74px;
+    display:flex;flex-direction:column;align-items:center;gap:7px;
+    padding:13px 6px;border-radius:16px;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--text-muted);font-size:.68rem;font-weight:700;
+    cursor:pointer;text-align:center;
+  }
+  .tile:active{transform:scale(.95);background:var(--surface-2);}
+  .tile-icon{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft);
+  }
+  .tile-icon svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.7;}
+
+  .footer{
+    text-align:center;color:var(--text-muted);
+    font-size:.78rem;padding:34px 20px 44px;
+  }
+  .footer a{color:var(--accent);text-decoration:none;font-weight:700;}
+
+  @media (max-width:380px){
+    .control-select{max-width:38vw;}
+  }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="{% if bot_username %}https://t.me/{{ bot_username }}{% else %}#{% endif %}" target="_blank" rel="noopener">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 10 10"><polygon points="1,0 10,5 1,10"/></svg>
+    </span>
+    <span class="brand-name">{% if bot_username %}@{{ bot_username }}{% else %}Stream{% endif %}</span>
+  </a>
+</header>
+
+<main class="wrap">
+
+  <section class="screen-frame">
+    <div class="screen-glow" aria-hidden="true"></div>
+    <div class="player-shell">
+      <svg class="watermark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+      <video id="player" class="player" src="{{ file_url }}" playsinline controls preload="metadata" width="100%"></video>
+    </div>
+
+    {% if (qualities and qualities|length > 1) or (audio_tracks and audio_tracks|length > 1) %}
+    <div class="control-bar">
+      {% if qualities and qualities|length > 1 %}
+      <label class="control">
+        <span class="control-label">Quality</span>
+        <select id="qualitySelect" class="control-select">
+          {% for q in qualities %}
+          <option value="{{ q.src }}" {% if q.current %}selected{% endif %}>{{ q.label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
+      <label class="control" id="audioControl" style="display:none;">
+        <span class="control-label">Audio</span>
+        <select id="audioSelect" class="control-select"></select>
+      </label>
+    </div>
+    {% endif %}
+  </section>
+
+  <div class="ticket-divider" aria-hidden="true"></div>
+
+  <section class="info">
+    <h1 class="file-title">{{ file_name }}</h1>
+    <div class="meta-row">
+      <span class="meta-pill">{{ file_size }}</span>
+      {% if current_quality %}<span class="meta-pill accent">{{ current_quality }}</span>{% endif %}
+      <span class="meta-pill" id="formatPill"></span>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ file_url }}" download>
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M5 21h14"/></svg>
+        Download
+      </a>
+      <button class="btn btn-ghost" id="copyLinkBtn" type="button">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copyLinkLabel">Copy link</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="external" id="externalSection" hidden>
+    <h2 class="section-heading">Open in another player</h2>
+    <div class="tile-row">
+      <button class="tile" data-player="vlc">
+        <span class="tile-icon"><svg viewBox="0 0 24 24"><path d="M5 20l7-16 7 16z"/><path d="M9 20l3-7 3 7"/></svg></span>
+        VLC
+      </button>
+      <button class="tile" data-player="mx">
+        <span class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><polygon points="10,9 15,12 10,15" fill="currentColor" stroke="none"/></svg></span>
+        MX Player
+      </button>
+      <button class="tile" data-player="playit">
+        <span class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg></span>
+        PlayIt
+      </button>
+      <button class="tile" data-player="km">
+        <span class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polygon points="10,9 15,12 10,15" fill="currentColor" stroke="none"/></svg></span>
+        KMPlayer
+      </button>
+      <button class="tile" data-player="more">
+        <span class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></span>
+        More
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Streamed via {% if bot_username %}<a href="https://t.me/{{ bot_username }}" target="_blank" rel="noopener">@{{ bot_username }}</a>{% else %}Telegram{% endif %}</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var video = document.getElementById('player');
+  var fileUrl = {{ file_url_json }};
+  var fileName = {{ file_name_json }};
+  var audioTracksMeta = {{ audio_tracks_json }};
+
+  // ---- File-format pill ----
+  var formatPill = document.getElementById('formatPill');
+  if (formatPill) {
+    var extMatch = fileName.match(/\.([a-zA-Z0-9]+)$/);
+    if (extMatch) {
+      formatPill.textContent = extMatch[1].toUpperCase();
+    } else {
+      formatPill.style.display = 'none';
+    }
+  }
+
+  // ---- Quality switching ----
+  var qualitySelect = document.getElementById('qualitySelect');
+  if (qualitySelect) {
+    qualitySelect.addEventListener('change', function () {
+      var wasPlaying = !video.paused;
+      var time = video.currentTime;
+      video.src = this.value;
+      var resume = function () {
+        video.currentTime = time;
+        if (wasPlaying) { video.play().catch(function () {}); }
+        video.removeEventListener('loadedmetadata', resume);
+      };
+      video.addEventListener('loadedmetadata', resume);
+    });
+  }
+
+  // Best-effort adaptive default: pick a starting quality based on the
+  // browser's own connection estimate, when available. Never overrides
+  // an explicit choice the visitor makes afterwards.
+  try {
+    var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+    if (conn && qualitySelect && qualitySelect.options.length > 1 && typeof conn.downlink === 'number') {
+      var downlink = conn.downlink;
+      var pick = function (needle) {
+        for (var i = 0; i < qualitySelect.options.length; i++) {
+          if (qualitySelect.options[i].textContent.toLowerCase().indexOf(needle) !== -1) return qualitySelect.options[i];
+        }
+        return null;
+      };
+      var preferred = null;
+      if (downlink < 1.5) preferred = pick('360p') || pick('480p');
+      else if (downlink < 4) preferred = pick('480p') || pick('720p');
+      else if (downlink < 8) preferred = pick('720p');
+      if (preferred) {
+        qualitySelect.value = preferred.value;
+        video.src = preferred.value;
+      }
+    }
+  } catch (e) { /* Network Information API unsupported - default quality stays */ }
+
+  // ---- Audio track switching (native embedded tracks) ----
+  var audioControl = document.getElementById('audioControl');
+  var audioSelect = document.getElementById('audioSelect');
+  function setupAudioTracks() {
+    if (!audioSelect || !('audioTracks' in video)) return;
+    var tracks = video.audioTracks;
+    if (!tracks || tracks.length < 2) return;
+    audioSelect.innerHTML = '';
+    for (var i = 0; i < tracks.length; i++) {
+      var meta = audioTracksMeta[i] || {};
+      var opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = meta.label || tracks[i].label || tracks[i].language || ('Track ' + (i + 1));
+      opt.selected = tracks[i].enabled;
+      audioSelect.appendChild(opt);
+    }
+    audioControl.style.display = 'flex';
+    audioSelect.onchange = function () {
+      var idx = parseInt(this.value, 10);
+      for (var i = 0; i < tracks.length; i++) { tracks[i].enabled = (i === idx); }
+    };
+  }
+  video.addEventListener('loadedmetadata', setupAudioTracks);
+  video.addEventListener('canplay', setupAudioTracks);
+
+  // ---- Copy link ----
+  var copyBtn = document.getElementById('copyLinkBtn');
+  var copyLabel = document.getElementById('copyLinkLabel');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      var url = qualitySelect ? qualitySelect.value : fileUrl;
+      var done = function () {
+        copyBtn.classList.add('is-copied');
+        copyLabel.textContent = 'Copied';
+        setTimeout(function () {
+          copyBtn.classList.remove('is-copied');
+          copyLabel.textContent = 'Copy link';
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done).catch(function () { fallbackCopy(url, done); });
+      } else {
+        fallbackCopy(url, done);
+      }
+    });
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  // ---- Open in external player (Android only - intent: links are meaningless elsewhere) ----
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var externalSection = document.getElementById('externalSection');
+  if (isAndroid && externalSection) {
+    externalSection.hidden = false;
+    var PACKAGES = {
+      vlc: 'org.videolan.vlc',
+      mx: 'com.mxtech.videoplayer.ad',
+      playit: 'com.playit.videoplayer',
+      km: 'com.kmplayer'
+    };
+    externalSection.addEventListener('click', function (ev) {
+      var tile = ev.target.closest('.tile');
+      if (!tile) return;
+      var url = qualitySelect ? qualitySelect.value : fileUrl;
+      var player = tile.getAttribute('data-player');
+      var target;
+      if (player === 'more') {
+        target = 'intent:' + url + '#Intent;action=android.intent.action.VIEW;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+      } else {
+        var pkg = PACKAGES[player];
+        target = 'intent:' + url + '#Intent;package=' + pkg + ';S.title=' + encodeURIComponent(fileName) +
+                 ';S.browser_fallback_url=' + encodeURIComponent('https://play.google.com/store/apps/details?id=' + pkg) + ';end';
+      }
+      window.location.href = target;
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

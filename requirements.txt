@@ -1,0 +1,20 @@
+pyrofork>=2.3.68
+tgcrypto
+aiohttp
+python-dotenv
+motor
+aiofiles
+dnspython
+apscheduler
+requests
+psutil
+colorama
+pytz
+shortzy
+
+# For Web Deployable
+jinja2
+Flask
+gunicorn
+werkzeug
+itsdangerous
